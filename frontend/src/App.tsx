@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { SelectDirectory, GetFileSizes } from "../wailsjs/go/main/App";
 import { Header } from "./components/Header";
 import { ProgressBar } from "./components/ProgressBar";
@@ -13,12 +13,6 @@ function App() {
   const [error, setError] = useState("");
   const [progress, setProgress] = useState(0);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
-
-  function buildAndLayout(basePath: string, data: FileSizeInfo[]) {
-    const root = buildTree(data);
-    layoutPivotAndSlice(root, 0, 0, containerSize.width, containerSize.height);
-    return { basePath, rootNode: root, history: [] };
-  }
 
   const handleSizeChange = useCallback((width: number, height: number) => {
     setContainerSize({ width, height });
@@ -122,7 +116,7 @@ function App() {
   const basePath = currentView?.basePath || "";
 
   return (
-    <div className="App">
+    <div className="min-h-screen bg-background text-foreground">
       <Header
         dirPath={dirPath}
         onSelectDirectory={handleSelectDirectory}
@@ -131,8 +125,10 @@ function App() {
         canGoBack={history.length > 1}
       />
       <ProgressBar progress={progress} />
-      {error && <div style={{ color: "red", marginBottom: 10 }}>{error}</div>}
-      <div style={{ display: "flex" }}>
+      {error && (
+        <div className="p-4 text-sm text-destructive">{error}</div>
+      )}
+      <div className="flex p-4 gap-4">
         {rootNode && (
           <FileTree
             node={rootNode}

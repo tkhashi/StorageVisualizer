@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Node, HoverInfo } from "../types";
 import { formatSize } from "../utils";
+import { Card } from "@/components/ui/card";
 
 interface TreemapProps {
   node: Node;
@@ -85,26 +86,18 @@ interface TooltipProps {
 }
 
 function Tooltip({ hoverInfo, rootSize }: TooltipProps) {
-  const style: React.CSSProperties = {
-    position: "fixed",
-    left: hoverInfo.x + 10,
-    top: hoverInfo.y + 10,
-    backgroundColor: "rgba(0,0,0,0.8)",
-    color: "#fff",
-    padding: "4px",
-    borderRadius: "4px",
-    pointerEvents: "none",
-    fontSize: "12px",
-    maxWidth: "300px",
-    zIndex: 9999,
-  };
-
   return (
-    <div style={style}>
-      <div>Name: {hoverInfo.node.name}</div>
-      <div>Path: {hoverInfo.node.path}</div>
-      <div>Size: {formatSize(hoverInfo.node.size)} ({((hoverInfo.node.size / (rootSize || hoverInfo.node.size)) * 100).toFixed(1)}%)</div>
-    </div>
+    <Card className="fixed z-50 p-3 bg-popover text-popover-foreground shadow-lg rounded-lg max-w-[300px]" 
+      style={{ left: hoverInfo.x + 10, top: hoverInfo.y + 10 }}>
+      <div className="space-y-1 text-sm">
+        <div>Name: {hoverInfo.node.name}</div>
+        <div className="text-muted-foreground text-xs">{hoverInfo.node.path}</div>
+        <div>
+          Size: {formatSize(hoverInfo.node.size)} 
+          ({((hoverInfo.node.size / (rootSize || hoverInfo.node.size)) * 100).toFixed(1)}%)
+        </div>
+      </div>
+    </Card>
   );
 }
 
@@ -159,18 +152,7 @@ export function Visualization({ node, onSizeChange }: VisualizationProps) {
   return (
     <div
       ref={containerRef}
-      style={{
-        position: "relative",
-        flex: 1,
-        minWidth: 400,
-        minHeight: 600,
-        height: 600,
-        marginLeft: 10,
-        border: "1px solid #aaa",
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
-      }}
+      className="relative flex-1 min-w-[400px] min-h-[600px] h-[600px] ml-4 border rounded-lg overflow-hidden"
     >
       <Treemap node={node} rootSize={node.size} onHover={handleHover} onLeave={handleLeave} />
       {hovered && <Tooltip hoverInfo={hovered} rootSize={node.size} />}

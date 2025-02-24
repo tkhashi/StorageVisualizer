@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { ChevronRight, ChevronDown, Folder, File } from "lucide-react";
 import type { Node } from "../types";
+import { formatSize } from "../utils";
 
 interface FolderProps {
   node: Node;
@@ -7,13 +9,16 @@ interface FolderProps {
   onClickFolder: (n: Node) => void;
 }
 
-function Folder({ node, level, onClickFolder }: FolderProps) {
+function FolderItem({ node, level, onClickFolder }: FolderProps) {
   const [expanded, setExpanded] = useState(false);
 
   if (!node.isDir) {
     return (
-      <div style={{ marginLeft: level * 16 }}>
-        {node.name} ({node.size} bytes)
+      <div className={`flex items-center py-1 px-2 hover:bg-accent/50 ml-${level * 4}`}>
+        <File className="h-4 w-4 mr-2 text-muted-foreground" />
+        <span className="text-sm">
+          {node.name} ({formatSize(node.size)})
+        </span>
       </div>
     );
   }
@@ -24,14 +29,24 @@ function Folder({ node, level, onClickFolder }: FolderProps) {
   };
 
   return (
-    <div style={{ marginLeft: level * 16 }}>
-      <div style={{ cursor: "pointer", fontWeight: "bold" }} onClick={handleClick}>
-        {node.name} ({node.size} bytes)
+    <div className={`ml-${level * 4}`}>
+      <div
+        className="flex items-center py-1 px-2 hover:bg-accent/50 cursor-pointer"
+        onClick={handleClick}
+      >
+        {expanded ? (
+          <ChevronDown className="h-4 w-4 mr-1" />
+        ) : (
+          <ChevronRight className="h-4 w-4 mr-1" />
+        )}
+        <Folder className="h-4 w-4 mr-2 text-blue-500" />
+        <span className="text-sm font-medium">
+          {node.name} ({formatSize(node.size)})
+        </span>
       </div>
-      {expanded &&
-        node.children?.map((child, i) => (
-          <Folder key={i} node={child} level={level + 1} onClickFolder={onClickFolder} />
-        ))}
+      {expanded && node.children?.map((child, i) => (
+        <FolderItem key={i} node={child} level={level + 1} onClickFolder={onClickFolder} />
+      ))}
     </div>
   );
 }
@@ -43,27 +58,14 @@ interface FileTreeProps {
 }
 
 export function FileTree({ node, basePath, onClickFolder }: FileTreeProps) {
-  if (!node.isDir) {
-    return (
-      <div>
-        {node.name} ({node.size} bytes)
-      </div>
-    );
-  }
-
   return (
-    <div
-      style={{
-        width: 300,
-        height: 600,
-        border: "1px solid #aaa",
-        overflowY: "auto",
-      }}
-    >
-      <div style={{ fontWeight: "bold" }}>{basePath}</div>
-      {node.children?.map((child, i) => (
-        <Folder key={i} node={child} level={0} onClickFolder={onClickFolder} />
-      ))}
+    <div className="w-[300px] h-[600px] border rounded-lg overflow-y-auto bg-card">
+      <div className="p-2 border-b font-medium text-sm">{basePath}</div>
+      <div className="p-2">
+        {node.children?.map((child, i) => (
+          <FolderItem key={i} node={child} level={0} onClickFolder={onClickFolder} />
+        ))}
+      </div>
     </div>
   );
 }

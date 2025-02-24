@@ -83,3 +83,10 @@ v2/cmd/wails/internal/commands/initialise/templates/testtemplates/
 
 # Temporary called mkdocs, should be renamed to more standard -website or similar
 /mkdocs-website/site
+
+.log/
+node_modules/
+docs/
+css/
+export.scss
+export/

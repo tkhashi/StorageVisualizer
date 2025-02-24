@@ -1,4 +1,4 @@
-import React from "react";
+import { Progress } from "@/components/ui/progress";
 
 interface ProgressBarProps {
   progress: number;
@@ -6,18 +6,11 @@ interface ProgressBarProps {
 
 export function ProgressBar({ progress }: ProgressBarProps) {
   return (
-    <div style={{ display: "flex", alignItems: "center", marginBottom: 10 }}>
-      <div style={{ flex: 1, height: 20, background: "#ccc", marginRight: 10 }}>
-        <div
-          style={{
-            width: progress + "%",
-            height: "100%",
-            background: "#0066cc",
-            transition: "width .1s ease",
-          }}
-        />
+    <div className="flex items-center gap-4 p-4">
+      <Progress value={progress} className="flex-1" />
+      <div className="min-w-[40px] text-right text-sm text-muted-foreground">
+        {progress}%
       </div>
-      <div style={{ minWidth: 40, textAlign: "right" }}>{progress}%</div>
     </div>
   );
 }

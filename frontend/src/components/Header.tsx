@@ -1,4 +1,5 @@
-import React from "react";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, FolderOpen, Search } from "lucide-react";
 
 interface HeaderProps {
   dirPath: string;
@@ -10,15 +11,25 @@ interface HeaderProps {
 
 export function Header({ dirPath, onSelectDirectory, onScan, onBack, canGoBack }: HeaderProps) {
   return (
-    <div style={{ marginBottom: 10 }}>
-      <label style={{ marginRight: 8 }}>Selected Path: {dirPath}</label>
-      <button style={{ marginRight: 8 }} onClick={onSelectDirectory}>
-        Select Directory
-      </button>
-      <button style={{ marginRight: 8 }} onClick={onScan}>Scan</button>
-      {canGoBack && (
-        <button onClick={onBack}>Back</button>
-      )}
+    <div className="flex items-center gap-4 p-4 border-b">
+      <div className="flex items-center gap-2">
+        {canGoBack && (
+          <Button variant="ghost" size="icon" onClick={onBack}>
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+        )}
+        <Button variant="outline" onClick={onSelectDirectory}>
+          <FolderOpen className="h-4 w-4 mr-2" />
+          Select Directory
+        </Button>
+        <Button onClick={onScan}>
+          <Search className="h-4 w-4 mr-2" />
+          Scan
+        </Button>
+      </div>
+      <div className="flex-1 text-sm text-muted-foreground">
+        Selected Path: {dirPath}
+      </div>
     </div>
   );
 }
